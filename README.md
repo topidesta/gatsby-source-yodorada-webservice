@@ -41,7 +41,7 @@ query Authors {
     edges {
       node {
         id
-        thisId
+        yoId
         authorname
         created
         changed
