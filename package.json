@@ -1,0 +1,25 @@
+{
+  "name": "gatsby-source-yodorada-webservice",
+  "version": "0.1.0",
+  "description": "Gatsby plugin to get yodorada webservice rest api data.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No current tests\" && exit 1"
+  },
+  "homepage": "http://yodorada.de",
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "gatsby-source-plugin"
+  ],
+  "author": "Maya K. Herrmann | Yodorada <coding@yodorada.de>",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "chalk": "^2.3.2",
+    "deep-map-keys": "^1.2.0",
+    "isomorphic-fetch": "^2.2.1",
+    "lodash": "^4.17.5",
+    "nanoid": "^1.0.2"
+  }
+}
