@@ -3,14 +3,18 @@ const fetch = require('isomorphic-fetch')
 const nanoid = require(`nanoid`)
 const crypto = require(`crypto`)
 const chalk = require('chalk')
-const normalize = require(`./normalize`)
+const utils = require(`./utils`)
 const btoa = (str) => Buffer.from(str).toString('base64')
 const typePrefix = `yodorada__`
 
 exports.sourceNodes = ({ boundActionCreators, createNodeId }, { host, user, password, apiKey, endpoints, options, conflictPrefix = `my_` }) => {
     const { createNode } = boundActionCreators
 
-    const request = Object.assign(options,{
+    if(endpoints && !Array.isArray(endpoints)) {
+      endpoints = [endpoints]
+    }
+
+    const request = {
       method: 'GET',
       mode: 'cors',
       cache: 'default',
@@ -20,20 +24,19 @@ exports.sourceNodes = ({ boundActionCreators, createNodeId }, { host, user, pass
           'Realm': btoa(apiKey),
           'Authorization': 'Basic '+btoa(user+':'+password)
       })
-    })
-
-    if(endpoints && !Array.isArray(endpoints)) {
-      endpoints = [endpoints]
     }
+
 
     return Promise.all(endpoints.map(endpoint => {
         console.log(chalk`{bgMagenta Yodorada Webservice} Getting endpoint ${host}${endpoint}`)
-        return fetch(`${host}${endpoint}`, request).then(res => res.json()).then(res => {
+        let query = utils.checkUserOptions(options, endpoint);
+        console.log(chalk`{bgMagenta Yodorada Webservice} Query ${query}`)
+        return fetch(`${host}${endpoint}${query}`, request).then(res => res.json()).then(res => {
             res.data.map(entry => {
                 entry.__type = `${typePrefix}${endpoint}`;
 
                // Standardize and clean keys
-                entry = normalize.standardizeKeys(entry, conflictPrefix)
+                entry = utils.standardizeKeys(entry, conflictPrefix)
 
                 // Create a unique id for gatsby
                 entry.id = createNodeId(`${nanoid()}`)
